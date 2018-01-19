@@ -20,7 +20,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -47,6 +46,8 @@ public class editView implements Serializable {
     private PicObjectDao objectDao;
     @EJB
     private PlaceDao placeDao;
+    
+    private InputStream bigImage;
     
     //WAY TOO MANY OBJECTS, 1 for each depiction type.
     private Animal animal;
@@ -237,6 +238,22 @@ public class editView implements Serializable {
     //GET PICTURE STREAM
     public InputStream getBigImage(){
         return picView.getPicStream(picView.getToEdit().getName());
+    }
+    public void setBigImage(InputStream bi){
+        this.bigImage=bi;
+    }
+    
+    //REDIRECTIONS
+    public String backToAlbums(){
+        
+        //REDIRECT USER
+        return PagesAndRoles.albums.path + "?faces-redirect=true";
+    }
+    
+    public String backToPictures(){
+        picView.setToEdit(null);
+        //REDIRECT USER
+        return PagesAndRoles.pictures.path + "?faces-redirect=true";
     }
     
     //GETTERS AND SETTERS

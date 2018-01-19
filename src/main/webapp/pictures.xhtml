@@ -21,7 +21,49 @@
                 </h:form>
             </ui:define>
             <ui:define name="content">
-                <ui:repeat var="pic" value="#{pictureView.pictureList}">
+                <div id="filter">
+                    <p>
+                        <label>Search:</label>
+                    </p>
+                    <p>
+                        <h:form>
+                            <br/>
+                            <label for="hName">Human name:</label>
+                            <h:inputText  h:type="text" id="hName" h:placeholder="Henry" value="#{pictureView.humanName}"
+                                         title="Name"/>
+                            <label for="aSpec">Animal specie:</label>
+                            <h:inputText  h:type="text" id="aSpec" h:placeholder="dog" value="#{pictureView.animalSpecie}"
+                                         title="Name"/>
+                            <label for="oName">Object name:</label>
+                            <h:inputText  h:type="text" id="oName" h:placeholder="cellphone" value="#{pictureView.objectName}"
+                                         title="Name"/>
+                            <label for="pCountry">Place country:</label>
+                            <h:inputText  h:type="text" id="pCountry" h:placeholder="newName" value="#{pictureView.placeCountry}"
+                                         title="Name"/>
+                            <h:commandButton class="button" value="Search" action="#{pictureView.search()}" />
+                            <h:commandButton class="button" value="Clear Filters" action="#{pictureView.clearSearch()}" />
+                        </h:form>
+                    </p>
+                </div>
+                <ui:repeat var="pic" value="#{pictureView.pictureList}" rendered="#{!pictureView.filtered}">
+                    <div class="picture">
+                        <h:form>
+                            <!--doesn't work : The image is not displayed properly-->
+                            <!--<h:graphicImage value="#{pictureView.getPic(pic.name)}" height="50px" width="200px"/>-->
+                            
+                            <!--Uses OmniFaces. OmniFaces's graphicImage supports InputStream as value, unlike h:graphIcimage-->
+                            <oou:graphicImage class="bg" value="#{pictureView.getPicStream(pic.name)}" height="100px" width="200px" />
+                            <p class="picInfo">
+                                <label outcome="pic">#{pic.name}</label>
+                            </p>
+                            <p class="picInfoButton">
+                                <h:commandButton class="button" value="edit" action="#{pictureView.edit(pic)}"/>
+                                <h:commandButton class="button" value="delete" action="#{pictureView.delete(pic)}"/>
+                            </p>
+                        </h:form>
+                    </div>
+                </ui:repeat>
+                <ui:repeat var="pic" value="#{pictureView.pictureListFiltered}" rendered="#{pictureView.filtered}">
                     <div class="picture">
                         <h:form>
                             <!--doesn't work : The image is not displayed properly-->

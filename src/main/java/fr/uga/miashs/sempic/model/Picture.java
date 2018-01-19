@@ -10,7 +10,10 @@ import fr.uga.miashs.sempic.model.depictions.Human;
 import fr.uga.miashs.sempic.model.depictions.Place;
 import fr.uga.miashs.sempic.model.depictions.PicObject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,16 +43,16 @@ public class Picture implements Serializable {
     @ManyToOne
     private Album album;
     
-    @OneToMany(mappedBy="depictedIn")
+    @OneToMany(mappedBy="depictedIn",cascade=CascadeType.REMOVE)
     Collection<Animal> animals;
     
-    @OneToMany(mappedBy="depictedIn")
+    @OneToMany(mappedBy="depictedIn",cascade=CascadeType.REMOVE)
     Collection<Human> humans;
     
-    @OneToMany(mappedBy="depictedIn")
+    @OneToMany(mappedBy="depictedIn",cascade=CascadeType.REMOVE)
     Collection<PicObject> picObjects;
     
-    @OneToMany(mappedBy="depictedIn")
+    @OneToMany(mappedBy="depictedIn",cascade=CascadeType.REMOVE)
     Collection<Place> places;
     
 
@@ -76,6 +79,24 @@ public class Picture implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Collection<Animal> getAnimals() {
+        return animals;
+    }
+
+    public Collection<Human> getHumans() {
+        return humans;
+    }
+
+    public Collection<PicObject> getPicObjects() {
+        return picObjects;
+    }
+
+    public Collection<Place> getPlaces() {
+        return places;
+    }
+    
+    
 
     @Override
     public int hashCode() {

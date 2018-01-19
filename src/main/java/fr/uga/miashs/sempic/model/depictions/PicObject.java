@@ -8,6 +8,7 @@ package fr.uga.miashs.sempic.model.depictions;
 import fr.uga.miashs.sempic.model.Picture;
 import fr.uga.miashs.sempic.model.Picture;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,7 +32,7 @@ public class PicObject implements Serializable {
     private String name;
     
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.REMOVE)
     private Picture depictedIn;
 
     public Long getId() {

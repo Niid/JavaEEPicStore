@@ -5,25 +5,29 @@
  */
 package fr.uga.sempic.jsf.beans;
 
-import fr.uga.miashs.sempic.model.Album;
 import fr.uga.miashs.sempic.model.Picture;
-import fr.uga.miashs.sempic.model.datalayer.AlbumDao;
 import fr.uga.miashs.sempic.model.datalayer.PictureDao;
-import fr.uga.miashs.sempic.model.datalayer.PictureStore;
+import fr.uga.miashs.sempic.model.datalayer.depictionsDao.AnimalDao;
+import fr.uga.miashs.sempic.model.datalayer.depictionsDao.HumanDao;
+import fr.uga.miashs.sempic.model.datalayer.depictionsDao.PicObjectDao;
+import fr.uga.miashs.sempic.model.datalayer.depictionsDao.PlaceDao;
+import fr.uga.miashs.sempic.model.depictions.Animal;
+import fr.uga.miashs.sempic.model.depictions.Human;
+import fr.uga.miashs.sempic.model.depictions.PicObject;
+import fr.uga.miashs.sempic.model.depictions.Place;
 import fr.uga.miashs.sempic.util.PagesAndRoles;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -39,14 +43,20 @@ import javax.validation.ConstraintViolationException;
 @Named
 @ApplicationScoped
 public class PictureView implements Serializable {
-    @Inject
-    private AuthManager auth;
     
     @Inject
     private AlbumView albView;
     
     @EJB
     private PictureDao dao;
+    @EJB
+    private AnimalDao aDao;
+    @EJB
+    private HumanDao hDao;
+    @EJB
+    private PlaceDao pDao;
+    @EJB
+    private PicObjectDao poDao;
     
     private Picture selected;
     
@@ -55,6 +65,15 @@ public class PictureView implements Serializable {
     private Part picturePart;   //PART RECEIVED FROM INPUTFILE
 
     private List<Picture> pictureList;  //LIST OF ALL PICTURES TO DISPLAY
+    private List<Picture> pictureListFiltered;  //LIST OF PICTURES TO DISPLAY
+    
+    private boolean filtered;
+    
+    //FILTERS
+    private String humanName;
+    private String animalSpecie;
+    private String objectName;
+    private String placeCountry;
     
     //CREATE PICTURE
     public String create() {
@@ -73,9 +92,7 @@ public class PictureView implements Serializable {
             //RESET SELECTED
             selected=null;
             
-            //REDIRECT USER
-            FacesContext context = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+            //REFRESH PAGE
             return PagesAndRoles.pictures.path + "?faces-redirect=true";
         } catch (EJBException ex) {
             System.out.println("EJBException");
@@ -103,6 +120,34 @@ public class PictureView implements Serializable {
         
         //REDIRECT TO EDIT PAGE
         return PagesAndRoles.editPic.path + "?faces-redirect=true";
+    }
+    
+    //SEARCH AND SHOW ONLY FILTERED IMAGES
+    public String search(){
+        //UPDATE BOOLEAN FILTERED
+        filtered=true;
+        
+        //FILTER RESULTS
+        this.pictureListFiltered=dao.getByFilter(albView.getToOpen(), animalSpecie, humanName, objectName, humanName);
+        
+        //REFRESH PAGE
+        return PagesAndRoles.pictures.path + "?faces-redirect=true";
+    }
+    
+    //CLEAR FILTERS AND REFRESH
+    public String clearSearch(){
+        //UPDATE BOOLEAN FILTERED
+        filtered=false;
+        
+        //EMPTY FILTERS
+        this.animalSpecie=null;
+        this.humanName=null;
+        this.objectName=null;
+        this.placeCountry=null;
+        this.pictureListFiltered=null;
+        
+        //REFRESH PAGE
+        return PagesAndRoles.pictures.path + "?faces-redirect=true";
     }
     
     //GET PICTURE PATH
@@ -141,14 +186,35 @@ public class PictureView implements Serializable {
             Logger.getLogger(PictureView.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        //DELETE ALL DEPICTIONS
+        Collection<Animal> animals =pic.getAnimals();
+        animals.stream().forEach((a) -> {
+            aDao.delete(a);
+        });
+        
+        Collection<Human> humans =pic.getHumans();
+        humans.stream().forEach((h) -> {
+            hDao.delete(h);
+        });
+        
+        Collection<PicObject> objs =pic.getPicObjects();
+        objs.stream().forEach((p) -> {
+            poDao.delete(p);
+        });
+        
+        Collection<Place> places =pic.getPlaces();
+        places.stream().forEach((p) -> {
+            pDao.delete(p);
+        });
+        
         //DELETE FROM DB
         dao.delete(pic);
         
         //REFRESH PAGE (not necessary ?)
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         return PagesAndRoles.pictures.path + "?faces-redirect=true";
     }
+    
+    
     
     //GETTERS AND SETTERS
     public Part getPicturePart() {
@@ -186,10 +252,67 @@ public class PictureView implements Serializable {
     public void setToEdit(Picture toEdit) {
         this.toEdit = toEdit;
     }
+
+    public String getHumanName() {
+        /*if(humanName==null){
+            humanName="";
+        }*/
+        return humanName;
+    }
+
+    public void setHumanName(String humanName) {
+        this.humanName = humanName;
+    }
+
+    public String getAnimalSpecie() {
+        /*if(animalSpecie==null){
+            animalSpecie="";
+        }*/
+        return animalSpecie;
+    }
+
+    public void setAnimalSpecie(String animalSpecie) {
+        this.animalSpecie = animalSpecie;
+    }
+
+    public String getObjectName() {
+        /*if(objectName==null){
+            objectName="";
+        }*/
+        return objectName;
+    }
+
+    public void setObjectName(String objectName) {
+        this.objectName = objectName;
+    }
+
+    public String getPlaceCountry() {
+        /*if(placeCountry==null){
+            placeCountry="";
+        }*/
+        return placeCountry;
+    }
+
+    public void setPlaceCountry(String placeCountry) {
+        this.placeCountry = placeCountry;
+    }
+
+    public boolean isFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(boolean filtered) {
+        this.filtered = filtered;
+    }
+
+    public List<Picture> getPictureListFiltered() {
+        /*if(pictureListFiltered==null){
+            pictureListFiltered=new ArrayList<>();
+        }*/
+        return pictureListFiltered;
+    }
     
     
-
-
 }
 
     

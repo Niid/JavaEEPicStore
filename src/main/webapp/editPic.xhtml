@@ -13,17 +13,18 @@
         <ui:composition template="./templates/sempic-template.xhtml">
             <ui:define name="left">
                 <h:form>
-                    <h:commandButton class="button" value="pictures" action="/pictures.xhtml" rendered="#{authManager.userConnected()}"/>
+                    <h:commandButton class="button" value="pictures" action="#{editView.backToPictures()}" rendered="#{authManager.userConnected()}"/>
                 </h:form>
                 <br/>
                 <h:form>
-                    <h:commandButton class="button" value="albums" action="/albums.xhtml" rendered="#{authManager.userConnected()}"/>
+                    <h:commandButton class="button" value="albums" action="#{editView.backToAlbums()}" rendered="#{authManager.userConnected()}"/>
                 </h:form>
                 <br/>
                 <h:form>
                     <h:commandButton class="button" value="logout" action="#{authManager.logout()}" rendered="#{authManager.userConnected()}"/>
                 </h:form>
             </ui:define>
+            
             <ui:define name="content">
                     <div class="bigPicture">
                             <!--Uses OmniFaces. OmniFaces's graphicImage supports InputStream as value, unlike h:graphIcimage-->

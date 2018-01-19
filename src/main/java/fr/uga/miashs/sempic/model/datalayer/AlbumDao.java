@@ -46,5 +46,4 @@ public class AlbumDao  extends AbstractJpaDao<Album,Long> {
             return null;
         }
     }
-    
 }
