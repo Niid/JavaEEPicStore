@@ -1,0 +1,72 @@
+/*body {
+    background-color: #f8f5f5;
+    font-size: 12px;
+    font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    color: #000000;  
+    margin: 10px;
+}
+
+h1 {
+    font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    border-bottom: 1px solid #AFAFAF; 
+    font-size:  16px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+    color: #000000;
+}
+
+a:link, a:visited {
+  color: #045491;
+  font-weight : bold;
+  text-decoration: none;
+}
+
+a:link:hover, a:visited:hover  {
+  color: #045491;
+  font-weight : bold;
+  text-decoration : underline;
+}*/
+
+
+/*refactored css*/
+
+body {
+    background-color: #f8f5f5;
+    font-size: 12px;
+    font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    color: #000000;  
+    margin: 10px;
+    display:grid;
+    grid-template-columns: 0.2fr 1.8fr 1fr;
+    grid-template-rows: 0.5fr 6fr 0.5fr;
+}
+
+h1 {
+    font-weight: bold;
+    text-align: center;
+    color: #000000;
+}
+
+.button {
+    background-color: #f8f5f5;
+    border: 1px solid #886b71;
+    color: black;
+    border-radius: 4px;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+
+.button:hover {
+    background-color: #886b71;
+    color: white;
+}

@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:oou="http://omnifaces.org/ui">
+    <h:head>
+        <title>Edit picure</title>
+    </h:head>
+    <body>
+
+        <ui:composition template="./templates/sempic-template.xhtml">
+            <ui:define name="left">
+                <h:form>
+                    <h:commandButton class="button" value="pictures" action="/pictures.xhtml" rendered="#{authManager.userConnected()}"/>
+                </h:form>
+                <br/>
+                <h:form>
+                    <h:commandButton class="button" value="albums" action="/albums.xhtml" rendered="#{authManager.userConnected()}"/>
+                </h:form>
+                <br/>
+                <h:form>
+                    <h:commandButton class="button" value="logout" action="#{authManager.logout()}" rendered="#{authManager.userConnected()}"/>
+                </h:form>
+            </ui:define>
+            <ui:define name="content">
+                    <div class="bigPicture">
+                            <!--Uses OmniFaces. OmniFaces's graphicImage supports InputStream as value, unlike h:graphIcimage-->
+                            <oou:graphicImage value="#{editView.bigImage}" height="100px" width="200px" />
+                            
+                    </div>
+                <!--PERSONS-->
+                <h2>Persons in the picture :</h2>
+                <ui:repeat var="hum" value="#{editView.humans}">
+                    <div class="depiction">
+                        <h:form>
+                            <p><b>Name: </b>#{hum.name}</p>
+                            <p><b>Sex: </b>#{hum.sex}</p>
+                            <p>
+                                <h:commandButton class="button" value="delete" action="#{editView.deleteHuman(hum)}" />
+                            </p>
+                        </h:form>
+                    </div>
+                </ui:repeat>
+                <div class="depiction">
+                    <h:form>
+                        <p>
+                            <label>Add person:</label>
+                        </p>
+                        <p>
+                            <br/>
+                            <label for="hName">Name:</label>
+                            <h:inputText  h:type="text" id="hName" h:placeholder="newName" value="#{editView.human.name}"
+                                         required="required" title="Name"/>
+                            <label for="hSex">Gender:</label>
+                            <h:selectOneMenu value = "#{editView.human.sex}" id="hSex"> 
+                                <f:selectItem itemValue = "man" itemLabel = "Man" /> 
+                                <f:selectItem itemValue = "woman" itemLabel = "Woman" /> 
+                            </h:selectOneMenu> 
+                            <h:commandButton class="button" value="add" action="#{editView.addHuman()}" />
+                        </p>
+                    </h:form>
+                </div>
+                
+                <!--ANIMALS-->
+                <h2>Animals in the picture :</h2>
+                <ui:repeat var="ani" value="#{editView.animals}">
+                    <div class="depiction">
+                        <h:form>
+                            <p><b>Specie: </b>#{ani.specie}</p>
+                            <p>
+                                <h:commandButton class="button" value="delete" action="#{editView.deleteAnimal(ani)}" />
+                            </p>
+                        </h:form>
+                    </div>
+                </ui:repeat>
+                <div class="depiction">
+                    <h:form>
+                        <p>
+                            <label>Add animal:</label>
+                        </p>
+                        <p>
+                            <br/>
+                            <label for="aSpecie">Specie:</label>
+                            <h:inputText  h:type="text" id="aSpecie" h:placeholder="specie" value="#{editView.animal.specie}"
+                                         required="required" title="Specie"/>
+                            <h:commandButton class="button" value="add" action="#{editView.addAnimal()}" />
+                        </p>
+                    </h:form>
+                </div>
+                
+                <!--OBJECTS-->
+                <h2>Objects in the picture :</h2>
+                <ui:repeat var="obj" value="#{editView.addedObjects}">
+                    <div class="depiction">
+                        <h:form>
+                            <p><b>Name: </b>#{obj.name}</p>
+                            <p>
+                                <h:commandButton class="button" value="delete" action="#{editView.deleteAddedObject(obj)}" />
+                            </p>
+                        </h:form>
+                    </div>
+                </ui:repeat>
+                <div class="depiction">
+                    <h:form>
+                        <p>
+                            <label>Add object:</label>
+                        </p>
+                        <p>
+                            <br/>
+                            <label for="oName">Name:</label>
+                            <h:inputText  h:type="text" id="oName" h:placeholder="name" value="#{editView.objectToAdd.name}"
+                                         required="required" title="Name"/>
+                            <h:commandButton class="button" value="add" action="#{editView.addObject()}" />
+                        </p>
+                    </h:form>
+                </div>
+                
+                <!--PLACES-->
+                <h2>Places in the picture :</h2>
+                <ui:repeat var="pla" value="#{editView.places}">
+                    <div class="depiction">
+                        <h:form>
+                            <p><b>City: </b>#{pla.city}</p>
+                            <p><b>Region: </b>#{pla.region}</p>
+                            <p><b>Country: </b>#{pla.country}</p>
+                            <p><b>Type Of Place: </b>#{pla.placeType}</p>
+                            <p>
+                                <h:commandButton class="button" value="delete" action="#{editView.deletePlace(pla)}" />
+                            </p>
+                        </h:form>
+                    </div>
+                </ui:repeat>
+                <div class="depiction">
+                    <h:form>
+                        <p>
+                            <label>Add place:</label>
+                        </p>
+                        <p>
+                            <br/>
+                            <label for="pCountry">Country:</label>
+                            <h:inputText id="pCountry"  h:type="text" h:placeholder="country" value="#{editView.place.country}"
+                                         required="required" title="Country"/>
+                            <br/>
+                            <label for="pCity">City:</label>
+                            <h:inputText id="pCity"  h:type="text" h:placeholder="city" value="#{editView.place.city}"
+                                         required="required" title="City"/>
+                            <br/>
+                            <label for="pRegion">Region:</label>
+                            <h:inputText id="pRegion" h:type="text" h:placeholder="region" value="#{editView.place.region}"
+                                         required="required" title="Region"/>
+                            <br/>
+                            <label for="pType">Place Type:</label>
+                            <h:inputText id="pType" h:type="text" h:placeholder="placeType" value="#{editView.place.placeType}"
+                                         required="required" title="Place type"/>
+                            <h:commandButton class="button" value="add" action="#{editView.addPlace()}" />
+                        </p>
+                    </h:form>
+                </div>
+                
+                <h:messages style="color:red;margin:8px;" />
+            </ui:define>
+        </ui:composition>
+        
+    </body>
+</html>
+
